@@ -34,36 +34,15 @@ class BusSearchController extends Controller
         $latitude = 1.299430;
         $longitude = 103.855669;
 
-        // $busStops = BusStop::with('buStopSchedule')
-        //             ->select('name', 'description', DB::raw('(6371 * acos(cos(radians(latitude)) * cos( radians('.$latitude.')) * cos( radians('.$longitude.') - radians(longitude)) + sin(radians(latitude)) * sin( radians('.$latitude.')))) AS distanceFromUser'))
-        //             ->whereHas('buStopSchedule', function($query) {
-        //                 $query->where('day', '=', date('l'));
-        //             })
-        //             ->orderBy('distanceFromUser', 'asc')
-        //             ->get();
-        //             //echo '<pre>';print_r($busStops);exit;
-        // foreach ($busStops as $key => $value) {
-        //     echo '<br />'.$value->id;
-        // }
-        // die();
-        // $busStops = DB::table('bus_stop')
-        //     ->leftJoin('bus_stop_schedule', 'bus_stop_schedule.bus_stop_id', '=', 'bus_stop.id')
-        //     ->join ('bus', 'bus.id', '=', 'bus_stop_schedule.bus_id')
-        //     ->select('bus_stop.name',
-        //         'bus_stop.description',
-        //         'bus_stop_schedule.day',
-        //         'bus_stop_schedule.time',
-        //         'bus_stop_schedule.description',
-        //         'bus.name', 'bus.description',
-        //         DB::raw('(6371 * acos(cos(radians(latitude)) * cos( radians('.$latitude.')) * cos( radians('.$longitude.') - radians(longitude)) + sin(radians(latitude)) * sin( radians('.$latitude.')))) AS distanceFromUser')
-        //         )
-        //     ->orderBy('distanceFromUser', 'asc')
-        //     ->orderBy('bus_stop_schedule.time', 'asc')
-        //     ->get();
-        $busStops = BusStop::select('id', 'name', 'description', DB::raw('(6371 * acos(cos(radians(latitude)) * cos( radians('.$latitude.')) * cos( radians('.$longitude.') - radians(longitude)) + sin(radians(latitude)) * sin( radians('.$latitude.')))) AS distanceFromUser'))
+        //get all bus stops
+        $busStops = BusStop::select('id',
+                        'name',
+                        'description',
+                        DB::raw('(6371 * acos(cos(radians(latitude)) * cos( radians('.$latitude.')) * cos( radians('.$longitude.') - radians(longitude)) + sin(radians(latitude)) * sin( radians('.$latitude.')))) AS distanceFromUser'))
                     ->orderBy('distanceFromUser', 'asc')
                     ->get();
 
+        //map busses scheduled in the bus stop
         $schedules = [];
         foreach ($busStops as $busStop) {
             $bstop = [
